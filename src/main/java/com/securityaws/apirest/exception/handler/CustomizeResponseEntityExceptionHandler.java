@@ -1,6 +1,7 @@
 package com.securityaws.apirest.exception.handler;
 
 import com.securityaws.apirest.exception.ExceptionResponse;
+import com.securityaws.apirest.exception.PersonNotFoundException;
 import com.securityaws.apirest.exception.UnsupportedMathOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,19 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(UnsupportedMathOperationException.class) // tratando exceções gerericas
+    @ExceptionHandler(UnsupportedMathOperationException.class) // t
     public final ResponseEntity<ExceptionResponse> handleBadRequestExeptions(Exception ex, WebRequest request){
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 new Date(), ex.getMessage(), request.getDescription(false)
         );
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(PersonNotFoundException.class) // tratando com id inexistente
+    public final ResponseEntity<ExceptionResponse> handleNotFoundException(Exception ex, WebRequest request){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(), ex.getMessage(), request.getDescription(false)
+        );
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
 }
