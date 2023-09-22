@@ -1,6 +1,7 @@
 package com.securityaws.apirest.controllers;
 
 import com.securityaws.apirest.data.vo.v1.PersonVO;
+import com.securityaws.apirest.data.vo.v2.PersonVOV2;
 import com.securityaws.apirest.model.Person;
 import com.securityaws.apirest.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,11 @@ public class PersonController {
     @PostMapping
     public ResponseEntity<PersonVO> create(@RequestBody PersonVO person){
         personService.createPerson(person);
+        return ResponseEntity.status(HttpStatus.CREATED).body(person);
+    }
+    @PostMapping("/v2")
+    public ResponseEntity<PersonVOV2> createV2(@RequestBody PersonVOV2 person){
+        personService.createPersonV2(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
     @PutMapping("/{id}")

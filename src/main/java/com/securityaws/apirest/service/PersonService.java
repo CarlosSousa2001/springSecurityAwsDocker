@@ -2,6 +2,8 @@ package com.securityaws.apirest.service;
 
 import com.securityaws.apirest.data.vo.v1.PersonVO;
 import com.securityaws.apirest.data.vo.v1.dozermapper.DozerMapper;
+import com.securityaws.apirest.data.vo.v1.dozermapper.custom.PersonMapper;
+import com.securityaws.apirest.data.vo.v2.PersonVOV2;
 import com.securityaws.apirest.exception.PersonNotFoundException;
 import com.securityaws.apirest.model.Person;
 import com.securityaws.apirest.repositories.PersonRepository;
@@ -18,8 +20,12 @@ public class PersonService {
     @Autowired
     private PersonRepository personRepository;
 
-    public PersonService(PersonRepository personRepository) {
+    @Autowired
+    private PersonMapper personMapper;
+
+    public PersonService(PersonRepository personRepository, PersonMapper personMapper) {
         this.personRepository = personRepository;
+        this.personMapper = personMapper;
     }
 
     private final AtomicLong counter = new AtomicLong();
@@ -44,6 +50,16 @@ public class PersonService {
 
         return vo;
     }
+    public PersonVOV2 createPersonV2(PersonVOV2 personvo){
+
+        logger.info("Criando usuario com a versão v2");
+
+        var entity = personMapper.convertEntityToPerson(personvo);
+
+        var vo = personMapper.convertEntityToVo(personRepository.save(entity));
+
+        return vo;
+    }
     public PersonVO updatePerson(Long id, PersonVO person){
 
         Person existingPerson = personRepository.findById(person.getId())
@@ -63,4 +79,5 @@ public class PersonService {
         getByidPerson(id);
         personRepository.deleteById(id);
     }
+
 }
