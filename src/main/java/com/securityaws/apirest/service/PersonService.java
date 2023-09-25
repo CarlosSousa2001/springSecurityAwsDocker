@@ -1,5 +1,6 @@
 package com.securityaws.apirest.service;
 
+import com.securityaws.apirest.controllers.PersonController;
 import com.securityaws.apirest.data.vo.v1.PersonVO;
 import com.securityaws.apirest.data.vo.v1.dozermapper.DozerMapper;
 import com.securityaws.apirest.data.vo.v1.dozermapper.custom.PersonMapper;
@@ -9,6 +10,10 @@ import com.securityaws.apirest.model.Person;
 import com.securityaws.apirest.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +37,24 @@ public class PersonService {
     private Logger logger = Logger.getLogger(PersonService.class.getName());
 
     public List<PersonVO> findAllPerson(){
-        return DozerMapper.parseListObject(personRepository.findAll(), PersonVO.class);
+        var persons = DozerMapper.parseListObject(personRepository.findAll(), PersonVO.class);
+
+        persons
+                .stream()
+                .forEach(p -> p.add(linkTo(methodOn(PersonController.class).getById(p.getKey())).withSelfRel()));
+
+        return persons;
     }
     public PersonVO getByidPerson(Long id){
         Optional<Person> personOptional =  personRepository.findById(id);
         if (personOptional.isPresent()){
-            return DozerMapper.parseObject(personOptional.get(), PersonVO.class);
+
+            var vo =  DozerMapper.parseObject(personOptional.get(), PersonVO.class);
+
+            vo.add(linkTo(methodOn(PersonController.class).getById(id)).withSelfRel());
+
+            return vo;
+
         } else {
             throw new PersonNotFoundException(String.format("Person com id: '%s' não encontrado", id));
         }
@@ -47,6 +64,8 @@ public class PersonService {
         var entity = DozerMapper.parseObject(personvo, Person.class);
 
         var vo =DozerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+
+        vo.add(linkTo(methodOn(PersonController.class).getById(vo.getKey())).withSelfRel());
 
         return vo;
     }
@@ -71,6 +90,8 @@ public class PersonService {
         existingPerson.setGender(person.getGender());
 
         var vo =DozerMapper.parseObject(personRepository.save(existingPerson), PersonVO.class);
+
+        vo.add(linkTo(methodOn(PersonController.class).getById(vo.getKey())).withSelfRel());
 
         return vo;
     }

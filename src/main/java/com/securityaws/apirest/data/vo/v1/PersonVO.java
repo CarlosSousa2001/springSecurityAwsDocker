@@ -1,18 +1,21 @@
 package com.securityaws.apirest.data.vo.v1;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.dozermapper.core.Mapping;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-
+@JsonPropertyOrder({"id", "firstName", "lastName", "address", "gender"}) // ordem de saida do dados no json
 public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
 
     private static final long serialVersionUID = 1l;
 
-    @Mapping("id")
+    @JsonProperty("id")
+    @Mapping("id") // dizendo pro dozer que o classe person tem id ao inves de key
     private Long key;
     private String firstName;
     private String lastName;
