@@ -1,15 +1,19 @@
 package com.securityaws.apirest.data.vo.v1;
 
 
+import com.github.dozermapper.core.Mapping;
+import org.springframework.hateoas.RepresentationModel;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 
-public class PersonVO implements Serializable {
+public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
 
     private static final long serialVersionUID = 1l;
 
-    private Long id;
+    @Mapping("id")
+    private Long key;
     private String firstName;
     private String lastName;
     private String address;
@@ -17,20 +21,20 @@ public class PersonVO implements Serializable {
 
     public PersonVO(){}
 
-    public PersonVO(Long id, String firstName, String lastName, String address, String gender) {
-        this.id = id;
+    public PersonVO(Long key, String firstName, String lastName, String address, String gender) {
+        this.key = key;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.gender = gender;
     }
 
-    public Long getId() {
-        return id;
+    public Long getKey() {
+        return key;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setKey(Long key) {
+        this.key = key;
     }
 
     public String getFirstName() {
@@ -70,11 +74,11 @@ public class PersonVO implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PersonVO person = (PersonVO) o;
-        return Objects.equals(id, person.id);
+        return Objects.equals(key, person.key);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(key);
     }
 }
