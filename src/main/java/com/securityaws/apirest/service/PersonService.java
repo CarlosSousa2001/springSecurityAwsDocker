@@ -79,7 +79,7 @@ public class PersonService {
 
         return vo;
     }
-    public PersonVO updatePerson(Long id, PersonVO person){
+    public PersonVO updatePerson(PersonVO person){
 
         Person existingPerson = personRepository.findById(person.getKey())
                         .orElseThrow(() -> new PersonNotFoundException("id inválido"));

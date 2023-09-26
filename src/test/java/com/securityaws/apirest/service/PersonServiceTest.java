@@ -1,5 +1,6 @@
 package com.securityaws.apirest.service;
 
+import com.securityaws.apirest.data.vo.v1.PersonVO;
 import com.securityaws.apirest.model.Person;
 import com.securityaws.apirest.repositories.PersonRepository;
 import com.securityaws.apirest.unittests.mapper.mocks.MockPerson;
@@ -37,11 +38,11 @@ class PersonServiceTest {
 
     @Test
     void getByidPerson() {
-        Person person = input.mockEntity(1);
+        Person entity = input.mockEntity(1);
 
-        person.setId(1L);
+        entity.setId(1L);
 
-        when(repository.findById(1L)).thenReturn(Optional.of(person));
+        when(repository.findById(1L)).thenReturn(Optional.of(entity));
 
         var result = service.getByidPerson(1L);
 
@@ -62,6 +63,28 @@ class PersonServiceTest {
 
     @Test
     void createPerson() {
+        Person entity = input.mockEntity(1);
+        // quando eu chamo a linha 65 o entity vem sem o id, então eu preciso passar um id depois
+        Person persisted = entity;
+        persisted.setId(1L);
+
+        PersonVO vo = input.mockVO(1);
+        vo.setKey(1L);
+
+        when(repository.findById(1L)).thenReturn(Optional.of(entity));
+        when(repository.save(entity)).thenReturn(persisted);
+
+        var result = service.updatePerson(vo);
+
+        assertNotNull(result);
+        assertNotNull(result.getKey());
+        assertNotNull(result.getLinks());
+
+        assertNotNull(result.toString().contains("links: [</api/person/v1>;rel=\"self\"]"));
+        assertEquals("Addres Test1", result.getAddress());
+        assertEquals("First Name Test1", result.getFirstName());
+        assertEquals("Last Name Test1", result.getLastName());
+        assertEquals("Female", result.getGender());
     }
 
     @Test
@@ -70,6 +93,25 @@ class PersonServiceTest {
 
     @Test
     void updatePerson() {
+        Person entity = input.mockEntity(1);
+        // quando eu chamo a linha 65 o entity vem sem o id, então eu preciso passar um id depois
+        Person persisted = entity;
+        persisted.setId(1L);
+
+        PersonVO vo = input.mockVO(1);
+        vo.setKey(1L);
+
+        when(repository.save(entity)).thenReturn(persisted);
+
+        var result = service.createPerson(vo);
+        assertNotNull(result);
+        assertNotNull(result.getKey());
+        assertNotNull(result.getLinks());
+        assertNotNull(result.toString().contains("links: [</api/person/v1>;rel=\"self\"]"));
+        assertEquals("Addres Test1", result.getAddress());
+        assertEquals("First Name Test1", result.getFirstName());
+        assertEquals("Last Name Test1", result.getLastName());
+        assertEquals("Female", result.getGender());
     }
 
     @Test
