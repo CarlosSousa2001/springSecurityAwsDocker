@@ -6,6 +6,7 @@ import com.securityaws.apirest.data.vo.v1.dozermapper.DozerMapper;
 import com.securityaws.apirest.data.vo.v1.dozermapper.custom.PersonMapper;
 import com.securityaws.apirest.data.vo.v2.PersonVOV2;
 import com.securityaws.apirest.exception.PersonNotFoundException;
+import com.securityaws.apirest.exception.RequiredObjectsNullException;
 import com.securityaws.apirest.model.Person;
 import com.securityaws.apirest.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,8 @@ public class PersonService {
     }
     public PersonVO createPerson(PersonVO personvo){
 
+        if(personvo == null) throw  new RequiredObjectsNullException();
+
         var entity = DozerMapper.parseObject(personvo, Person.class);
 
         var vo =DozerMapper.parseObject(personRepository.save(entity), PersonVO.class);
@@ -80,6 +83,8 @@ public class PersonService {
         return vo;
     }
     public PersonVO updatePerson(PersonVO person){
+
+        if(person == null) throw  new RequiredObjectsNullException();
 
         Person existingPerson = personRepository.findById(person.getKey())
                         .orElseThrow(() -> new PersonNotFoundException("id inválido"));

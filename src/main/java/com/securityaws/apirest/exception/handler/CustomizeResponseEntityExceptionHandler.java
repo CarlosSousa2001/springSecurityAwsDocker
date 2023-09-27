@@ -2,6 +2,7 @@ package com.securityaws.apirest.exception.handler;
 
 import com.securityaws.apirest.exception.ExceptionResponse;
 import com.securityaws.apirest.exception.PersonNotFoundException;
+import com.securityaws.apirest.exception.RequiredObjectsNullException;
 import com.securityaws.apirest.exception.UnsupportedMathOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,14 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
                 new Date(), ex.getMessage(), request.getDescription(false)
         );
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RequiredObjectsNullException.class)
+    public final ResponseEntity<ExceptionResponse> handleObjectsNullException(Exception ex, WebRequest request){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(), ex.getMessage(), request.getDescription(false)
+        );
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.securityaws.apirest.service;
 
 import com.securityaws.apirest.data.vo.v1.PersonVO;
+import com.securityaws.apirest.exception.RequiredObjectsNullException;
 import com.securityaws.apirest.model.Person;
 import com.securityaws.apirest.repositories.PersonRepository;
 import com.securityaws.apirest.unittests.mapper.mocks.MockPerson;
@@ -88,6 +89,18 @@ class PersonServiceTest {
     }
 
     @Test
+    void createPersonWithNullPerson() {
+
+        Exception exception = assertThrows(RequiredObjectsNullException.class, () -> {
+            service.createPerson(null);
+        });
+
+        String expectedMessage = "It is not allowed to persist a null object";
+        String actualMessage = exception.getMessage();
+
+        assertNotNull(actualMessage.contains(expectedMessage));
+    }
+    @Test
     void createPersonV2() {
     }
 
@@ -115,6 +128,25 @@ class PersonServiceTest {
     }
 
     @Test
+    void updatePersonWithNullPerson() {
+
+        Exception exception = assertThrows(RequiredObjectsNullException.class, () -> {
+            service.updatePerson(null);
+        });
+
+        String expectedMessage = "It is not allowed to persist a null object";
+        String actualMessage = exception.getMessage();
+
+        assertNotNull(actualMessage.contains(expectedMessage));
+    }
+    @Test
     void deleteById() {
+        Person entity = input.mockEntity(1);
+
+        entity.setId(1L);
+
+        when(repository.findById(1L)).thenReturn(Optional.of(entity));
+
+        service.deleteById(1L);
     }
 }
