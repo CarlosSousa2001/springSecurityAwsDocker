@@ -1,9 +1,6 @@
 package com.securityaws.apirest.exception.handler;
 
-import com.securityaws.apirest.exception.ExceptionResponse;
-import com.securityaws.apirest.exception.PersonNotFoundException;
-import com.securityaws.apirest.exception.RequiredObjectsNullException;
-import com.securityaws.apirest.exception.UnsupportedMathOperationException;
+import com.securityaws.apirest.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,7 +30,7 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
         );
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(PersonNotFoundException.class) // tratando com id inexistente
+    @ExceptionHandler({PersonNotFoundException.class, ErrorResponse.class}) // tratando com id inexistente
     public final ResponseEntity<ExceptionResponse> handleNotFoundException(Exception ex, WebRequest request){
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 new Date(), ex.getMessage(), request.getDescription(false)
@@ -41,12 +38,19 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(RequiredObjectsNullException.class)
+    @ExceptionHandler({RequiredObjectsNullException.class})
     public final ResponseEntity<ExceptionResponse> handleObjectsNullException(Exception ex, WebRequest request){
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 new Date(), ex.getMessage(), request.getDescription(false)
         );
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler({ErrorServerException.class})
+    public final ResponseEntity<ExceptionResponse> handleInternalserverErrorException(Exception ex, WebRequest request){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(), ex.getMessage(), request.getDescription(false)
+        );
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
