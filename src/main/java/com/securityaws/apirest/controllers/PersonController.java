@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @Tag(name = "People", description = "Contém todas as operações para manipulação da entidade Person")
 @RestController
 @RequestMapping("/api/person/v1")
@@ -45,6 +46,7 @@ public class PersonController {
         return ResponseEntity.ok().body(personList);
     }
 
+    @CrossOrigin(origins = "htt://localhost:8080")
     @Operation(summary = "Buscar pessoa por ID", description = "Enpoint que retorna uma pesssoa", tags = {"People"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso realizado com sucesso",
@@ -62,6 +64,7 @@ public class PersonController {
         PersonVO person = personService.getByidPerson(id);
         return ResponseEntity.ok().body(person);
     }
+    @CrossOrigin(origins = {"htt://localhost:8080", "htts://endereçoDoMeuSite.com.br"})
     @Operation(summary = "Criar nova pessoa", description = "Enpoint que cria uma pessoa", tags = {"People"},
             responses = {
                     @ApiResponse(responseCode = "201", description = "Recurso realizado com sucesso",
